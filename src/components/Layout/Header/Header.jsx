@@ -10,6 +10,7 @@ import { RiAdminFill } from 'react-icons/ri';
 import { MdOutlineLogin } from 'react-icons/md';
 import Search from '../../Search/Search';
 import { logout } from '../../../app/slices/authSlice';
+import { images } from '../../../constants/constants';
 
 function Navbar(props) {
   return (
@@ -59,10 +60,7 @@ function Header(props) {
         >
           <Col xs={3}>
             <div className={styles.logo} onClick={() => navigate('/')}>
-              <img
-                src="https://resource.medpro.com.vn/static/images/medpro/web/header_logo.svg?t=20337.701772199554"
-                alt=""
-              />
+              <img src={images.LOGO} alt="" wiidth="220px" height="100px" />
             </div>
           </Col>
           <Col xs={6}>
