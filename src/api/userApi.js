@@ -36,9 +36,27 @@ export const userApi = {
       toastify('error', error.message);
     }
   },
+
+  async editProfileUser(id, formData) {
+    try {
+      const res = await axiosClient.put(`edit-profile-user/${id}`, formData);
+      return res;
+    } catch (error) {
+      toastify('error', error.message);
+    }
+  },
   async getProfileDoctor(id) {
     try {
       const res = await axiosClient.get(`get-profile-doctor/${id}`);
+      return res;
+    } catch (error) {
+      toastify('error', error.message);
+    }
+  },
+
+  async getAllUser() {
+    try {
+      const res = await axiosClient.get('get-all-user');
       return res;
     } catch (error) {
       toastify('error', error.message);
