@@ -7,16 +7,17 @@ import { useSelector } from 'react-redux';
 
 function ConfirmInformation(props) {
   const navigate = useNavigate();
-  const { services } = useSelector((state) => state.service.data);
+  const { services } = useSelector((state) => state.service);
+  console.log(JSON.stringify(services) === '{}');
   useEffect(() => {
-    if (services.length <= 0) {
-      navigate('/');
+    if (JSON.stringify(services) === '{}') {
+      navigate('/dich-vu');
     }
   }, [services]);
   return (
     <>
-      {services.length <= 0 ? (
-        <Navigate to="/" />
+      {JSON.stringify(services) === '{}' ? (
+        <Navigate to="/dich-vu" />
       ) : (
         <LayoutBooks
           InfoBar={

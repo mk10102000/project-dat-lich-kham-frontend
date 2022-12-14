@@ -5,19 +5,22 @@ import HeadTitle from '../../components/HeadTitle/HeadTitle';
 import ChooseTime from './components/ChooseTime';
 import { lichLamViecApi } from '../../api/lichLamViecApi';
 import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { addService } from '../../app/slices/bookServiceSlice';
+import { datLichApi } from '../../api/datLich';
+import moment from 'moment';
+import { formatDate } from '../../utils/common';
 
 export default function ChooseDayExamination() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.currentUser);
   const [value, onChange] = useState(new Date());
   const [time, setTime] = useState('');
-  const [dateData, setDateData] = useState('');
+  const [dateData, setDateData] = useState(new Date());
   const [isViewTime, setIsViewTime] = useState(false);
-  const [buoiSang, setBuoiSang] = useState([]);
-  const [buoiChieu, setBuoiChieu] = useState([]);
-  const [timeItem, setTimeItem] = useState('');
+  const [listTimeDefault, setListTimeDefault] = useState([]);
+  const [dataDatLich, setDataDatLich] = useState([]);
   const navigate = useNavigate();
 
   function getPreviousDay(date = new Date()) {
@@ -31,6 +34,7 @@ export default function ChooseDayExamination() {
   };
 
   const handleOnClickDay = (value) => {
+    console.log(value);
     setIsViewTime(true);
     setDateData(value);
   };
@@ -44,8 +48,9 @@ export default function ChooseDayExamination() {
     dispatch(
       addService({
         time,
-        dateData,
+        date: formatDate(dateData),
         id: uuidv4(),
+        maND: user.maND,
       })
     );
     // call api save redux
@@ -54,16 +59,23 @@ export default function ChooseDayExamination() {
 
   const fetchData = async () => {
     try {
-      const { buoiSang, buoiChieu } = await lichLamViecApi.getThoiGianLamViec();
-      console.log(buoiSang);
-      setBuoiSang(buoiSang);
-      setBuoiChieu(buoiChieu);
+      const res = await lichLamViecApi.getThoiGianLamViec();
+      setListTimeDefault(res.data);
     } catch (error) {}
   };
 
+  const fetchGetDatLich = async () => {
+    try {
+      const res = await datLichApi.getDatLich({
+        ngayDatLich: moment(dateData).format('YYYY-MM-DD'),
+      });
+      setDataDatLich(res.data);
+    } catch (error) {}
+  };
   useEffect(() => {
     fetchData();
-  }, []);
+    fetchGetDatLich();
+  }, [dateData]);
 
   return (
     <div>
@@ -83,9 +95,9 @@ export default function ChooseDayExamination() {
           time={time}
           onClickTime={handleOnClickTime}
           date={value}
-          buoiChieu={buoiChieu}
-          buoiSang={buoiSang}
+          listTimeDefault={listTimeDefault}
           onSubmit={handleOnSubmit}
+          dataDatLich={dataDatLich}
         />
       )}
     </div>

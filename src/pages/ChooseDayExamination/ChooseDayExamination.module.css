@@ -10,11 +10,17 @@
   color: #0352cc;
   border: 1px solid #045fe8;
   border-radius: 5px;
-  padding: 1.2rem 1rem;
   text-align: center;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.5s ease;
+  width: 15rem;
+}
+
+.timeDisble {
+  width: 15rem;
+  cursor: no-drop;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .timeItem:hover,

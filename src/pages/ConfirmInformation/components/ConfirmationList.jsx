@@ -8,12 +8,24 @@ import { toastify } from '../../../utils/common';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { deleteService } from '../../../app/slices/bookServiceSlice';
+import { datLichApi } from '../../../api/datLich';
 
 export default function ConfirmationList() {
   const navigate = useNavigate();
-  const handleOnConfirm = () => {
-    // call api confirm here
-    toastify('success', 'Đăng ký lịch khám thành công');
+  const { services } = useSelector((state) => state.service);
+  const { maND } = useSelector((state) => state.auth.currentUser);
+  console.log(services);
+  const handleOnConfirm = async () => {
+    // call api confirm
+    try {
+      const res = await datLichApi.dangKyDatLich({
+        maND: maND,
+        maThoiGian: services.time.maTG,
+        tinhTrang: 'Pending',
+        thoiGianDangKy: moment(services.dateData).format('YYYY-MM-DD'),
+      });
+      toastify('success', res.message);
+    } catch (error) {}
   };
   return (
     <div>
@@ -37,11 +49,11 @@ export default function ConfirmationList() {
 }
 
 function ConfirmaItem() {
-  const { services } = useSelector((state) => state.service.data);
+  const { services } = useSelector((state) => state.service);
   const dispatch = useDispatch();
 
-  const handleOnDelete = (id) => {
-    dispatch(deleteService(id));
+  const handleOnDelete = () => {
+    dispatch(deleteService());
   };
   return (
     <Table bordered>
@@ -55,24 +67,18 @@ function ConfirmaItem() {
         </tr>
       </thead>
       <tbody>
-        {services.map((item, index) => (
-          <tr>
-            <td>{index + 1}</td>
-            <td>Khám thường</td>
-            <td>
-              {moment(item.dateDate).format('MM/DD/YYYY')}{' '}
-              {item.time.thoiGianBatDau}
-            </td>
-            <td>Thanh toán tại phòng khám</td>
-            <td
-              className={styles.deleteIcon}
-              onClick={() => handleOnDelete(item.id)}
-            >
-              <AiOutlineDelete />
-              Xóa
-            </td>
-          </tr>
-        ))}
+        <tr>
+          <td>{1}</td>
+          <td>Khám thường</td>
+          <td>
+            {services.date} {services.time.thoiGianBatDau}
+          </td>
+          <td>Thanh toán tại phòng khám</td>
+          <td className={styles.deleteIcon} onClick={() => handleOnDelete()}>
+            <AiOutlineDelete />
+            Xóa
+          </td>
+        </tr>
       </tbody>
     </Table>
   );

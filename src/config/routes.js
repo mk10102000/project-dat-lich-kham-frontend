@@ -11,12 +11,11 @@ import Page404 from '../pages/NotFound/404';
 import DashboardLayout from '../pages/Dashboard/components/DashboardLayout';
 import Dashboard from '../pages/Dashboard/views/Dashboard';
 import Upgrade from '../pages/Dashboard/views/Upgrade';
-import TableList from '../pages/Dashboard/views/TableList';
 import User from '../pages/Dashboard/views/UserProfile';
 import Notifications from '../pages/Dashboard/views/Notifications';
 import ProfileUser from '../pages/ProfileUser/ProfileUser';
-import { ProfileInforUser } from '../pages/ProfileUser/components/ProfileContent';
 import { ProtectedRoute, ProtectedRouteAdmin } from './ProtectedRoute';
+import ManagerCalendar from '../pages/Dashboard/views/ManagerCalender';
 
 let routes = (isLogin) => [
   {
@@ -73,7 +72,7 @@ let routes = (isLogin) => [
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'upgrade', element: <Upgrade /> },
-      { path: 'table', element: <TableList /> },
+      { path: 'manager-canlendar', element: <ManagerCalendar /> },
       { path: 'user', element: <User /> },
       { path: 'notifications', element: <Notifications /> },
     ],

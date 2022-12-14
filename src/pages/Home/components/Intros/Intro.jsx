@@ -12,14 +12,14 @@ function Intro(props) {
             <Col xs={4}>
               <div className={styles.boxLeft}>
                 <p>GIỚI THIỆU</p>
-                <h2>MEDPRO</h2>
+                <h2>Phòng khám Minh Khánh</h2>
                 <p>Đặt lịch khám bệnh</p>
               </div>
             </Col>
 
             <Col xs={8}>
               <div className={styles.boxRight}>
-                <strong>MEDPRO </strong>
+                <strong>Phòng khám Minh Khánh </strong>
                 là giải pháp đặt lịch khám bệnh, chăm sóc sức khỏe trực tuyến
                 cho cả gia đình. Người dùng chủ động trong việc khám chữa bệnh,
                 được lựa chọn dịch vụ, chuyên khoa, bác sĩ tại phòng khám Đa

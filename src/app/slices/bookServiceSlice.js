@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   specialtyed: '',
-  data: {
-    services: [],
-  },
+  services: {},
 };
 export const bookServiceSlice = createSlice({
   name: 'service',
@@ -13,12 +11,10 @@ export const bookServiceSlice = createSlice({
       state.specialtyed = action.payload;
     },
     addService(state, action) {
-      state.data.services.unshift(action.payload);
+      state.services = action.payload;
     },
     deleteService(state, action) {
-      const id = action.payload;
-      const newService = state.data.services.filter((item) => item.id !== id);
-      state.data.services = newService;
+      state.services = {};
     },
   },
   extraReducers: (builder) => {},

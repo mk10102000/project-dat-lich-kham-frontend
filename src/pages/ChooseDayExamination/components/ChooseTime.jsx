@@ -1,50 +1,21 @@
 import React, { useMemo, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import styles from '../ChooseDayExamination.module.css';
-const timeMorning = [
-  {
-    key: 100,
-    time: '07:00 - 08:00',
-  },
-  {
-    key: 101,
-    time: '08:00 - 09:00',
-  },
-  {
-    key: 102,
-    time: '09:00 - 10:00',
-  },
-  {
-    key: 103,
-    time: '10:00 - 11:00',
-  },
-];
-const timeAfternoon = [
-  {
-    key: 104,
-    time: '13:00 - 14:00',
-  },
-  {
-    key: 105,
-    time: '14:00 - 15:00',
-  },
-  {
-    key: 106,
-    time: '15:00 - 16:00',
-  },
-];
+
+const max = 6;
 function ChooseTime({
   onClickTime,
   time,
   date,
-  buoiSang,
-  buoiChieu,
+  listTimeDefault,
   onSubmit,
+  dataDatLich,
 }) {
-  const buoiSangMemo = useMemo(() => buoiSang, [buoiSang]);
-  const buoiChieuMemo = useMemo(() => buoiChieu, [buoiChieu]);
   const navigate = useNavigate();
+  const { maND } = useSelector((state) => state.auth.currentUser);
+
   const handleClickTime = (item) => {
     onClickTime(item);
   };
@@ -59,37 +30,47 @@ function ChooseTime({
         <h2 className={styles.title}>Buổi sáng</h2>
         <Container>
           <Row>
-            {buoiSangMemo?.map((item) => (
-              <Col xs={3} key={item.maTG}>
-                <div
-                  className={`${styles.timeItem} ${
-                    item.maTG === time.maTG && styles.timeActive
-                  }`}
-                  onClick={() => handleClickTime(item)}
-                >
-                  <span>
-                    {item.thoiGianBatDau} - {item.thoiGianKetThuc}
-                  </span>
+            {listTimeDefault?.map((item, index) => (
+              <Col xs={3} key={item.maTG} style={{ marginBottom: 20 }}>
+                <div>
+                  {dataDatLich[Number(index)] &&
+                  dataDatLich[Number(index)].maND === maND ? (
+                    <button
+                      disabled={
+                        dataDatLich[Number(index)] &&
+                        dataDatLich[Number(index)].maND === maND
+                      }
+                      className={`${styles.timeDisble} btn-button`}
+                    >
+                      <span>
+                        {item.thoiGianBatDau} - {item.thoiGianKetThuc}
+                      </span>
+                    </button>
+                  ) : (
+                    <button
+                      disabled={
+                        dataDatLich[Number(index)] &&
+                        dataDatLich[Number(index)].maND === maND
+                      }
+                      className={`${styles.timeItem} ${
+                        item.maTG === time.maTG && styles.timeActive
+                      } btn-button`}
+                      onClick={() => handleClickTime(item)}
+                    >
+                      <span>
+                        {item.thoiGianBatDau} - {item.thoiGianKetThuc}
+                      </span>
+                    </button>
+                  )}
                 </div>
 
-                <span className={styles.emptySlot}>Còn trống 4 suất</span>
-              </Col>
-            ))}
-            <h2 className={styles.title}>Buổi Chiều</h2>
-
-            {buoiChieuMemo?.map((item) => (
-              <Col xs={3} key={item.maTG}>
-                <div
-                  className={`${styles.timeItem} ${
-                    item.maTG === time.maTG && styles.timeActive
-                  }`}
-                  onClick={() => handleClickTime(item)}
-                >
-                  <span>
-                    {item.thoiGianBatDau} - {item.thoiGianKetThuc}
-                  </span>
-                </div>
-                <span className={styles.emptySlot}>Còn trống 4 suất</span>
+                <span className={styles.emptySlot}>
+                  Còn trống
+                  {dataDatLich[Number(index)]
+                    ? ` ${max - dataDatLich[Number(index)].count} `
+                    : ` ${max} `}
+                  suất
+                </span>
               </Col>
             ))}
           </Row>

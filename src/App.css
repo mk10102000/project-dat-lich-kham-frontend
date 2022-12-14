@@ -82,7 +82,7 @@ span.react-calendar__navigation__label__labelText.react-calendar__navigation__la
 .btn-button {
   border: none;
   outline: none;
-  padding: 1.8rem 3rem;
+  padding: 1.5rem 2rem;
   border-radius: 4px;
   font-size: 1.6rem;
   font-weight: 600;
@@ -102,4 +102,12 @@ span.react-calendar__navigation__label__labelText.react-calendar__navigation__la
 
 .Toastify__toast-body > div:last-child {
   font-size: 1.7rem;
+}
+
+.css-1fdsijx-ValueContainer {
+  font-size: 16px;
+}
+
+.nav-link.active {
+  background-color: var(--color-primary) !important;
 }

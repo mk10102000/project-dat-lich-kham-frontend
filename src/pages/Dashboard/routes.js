@@ -1,6 +1,6 @@
 import Dashboard from './views/Dashboard.js';
 import UserProfile from './views/UserProfile.js';
-import TableList from './views/TableList.js';
+import TableList from './views/ManagerCalender.js';
 import Typography from './views/Typography.js';
 import {
   BsFillCalendarDateFill,
@@ -26,7 +26,7 @@ const dashboardRoutes = [
     layout: '/admin',
   },
   {
-    path: '/table',
+    path: '/manager-canlendar',
     name: 'Quản lý đăng ký khám',
     icon: <FaRegCalendarPlus />,
     component: TableList,

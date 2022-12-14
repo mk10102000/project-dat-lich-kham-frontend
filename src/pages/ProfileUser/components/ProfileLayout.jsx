@@ -6,6 +6,7 @@ import {
   ProfileHistory,
   ProfileInforUser,
   ProfileInforDoctor,
+  ProfileInforTicker,
 } from './ProfileContent';
 
 function ProfileLayout(props) {
@@ -18,12 +19,13 @@ function ProfileLayout(props) {
           <Col xs={3}>
             <ProfileBar id={activeId} onClickId={(id) => setActiveId(id)} />
           </Col>
-          <Col xs={8}>
+          <Col xs={9}>
             {activeId === 'hoso' ? (
               <ProfileInforUser />
             ) : (
               activeId === 'lichsu' && <ProfileHistory />
             )}
+            {activeId === 'phieukham' && <ProfileInforTicker />}
             {activeId === 'bacsi' && <ProfileInforDoctor />}
           </Col>
         </Row>

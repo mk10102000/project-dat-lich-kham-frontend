@@ -22,7 +22,7 @@ export default function Login() {
       navigate('/');
       toastify('success', 'Đăng nhập thành công');
     } catch (error) {
-      toastify('error', error.message);
+      // toastify('error', error.message);
     }
   };
   return (

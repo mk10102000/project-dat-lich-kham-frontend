@@ -9,8 +9,10 @@ import new2 from '../assets/images/new2.jpg';
 import new3 from '../assets/images/new3.jpg';
 import bkLogin from '../assets/images/bk-login.jpg';
 import notFound from '../assets/images/undraw_page_not_found_su7k.svg';
+import logo from '../assets/images/logo.png';
 
 export const images = {
+  LOGO: logo,
   DKCS: dkcs,
   HAUCV2: haucv2,
   VIEN_PHI: vien_phi,

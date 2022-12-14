@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { toast } from 'react-toastify';
 
 export const phoneRegExp =
@@ -21,4 +22,8 @@ export const toastify = (type, label) => {
     default:
       break;
   }
+};
+
+export const formatDate = (date) => {
+  return moment(date).format('YYYY-MM-DD');
 };

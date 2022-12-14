@@ -21,7 +21,7 @@ function LoginForm({ onSubmitForm }) {
       .required('SDT không được bỏ trống.')
       .matches(phoneRegExp, 'SDT không đúng định dạng')
       .max(10, 'Số điện thoại không hợp lệ'),
-    password: yup.string().required('Xin vui lòng nhập lại mật khẩu.').min(8, "Mật khẩu cần ít nhất 8 ký tự"),
+    password: yup.string().required('Xin vui lòng nhập lại mật khẩu.').min(8),
   });
   const {
     control,

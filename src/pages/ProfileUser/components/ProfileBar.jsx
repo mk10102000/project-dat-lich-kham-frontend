@@ -1,15 +1,21 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RiShieldUserLine } from 'react-icons/ri';
+import { BsFillStickyFill } from 'react-icons/bs';
 import { FaHistory } from 'react-icons/fa';
+import { RiShieldUserLine } from 'react-icons/ri';
 import { TbBuildingHospital } from 'react-icons/tb';
+import { useSelector } from 'react-redux';
 import styles from '../ProfileUser.module.css';
 
 const profileRoute = [
   {
-    title: 'Hồ sơ người dùng',
+    title: 'Hồ sơ bệnh nhân',
     icon: <RiShieldUserLine />,
     id: 'hoso',
+  },
+  {
+    title: 'Thông tin phiếu khám bệnh',
+    icon: <BsFillStickyFill />,
+    id: 'phieukham',
   },
   {
     title: 'Lịch sử khám bệnh',

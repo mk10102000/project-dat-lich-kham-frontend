@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, Link } from 'react-router-dom';
 
 import { Nav } from 'react-bootstrap';
 
@@ -20,9 +20,9 @@ function DashboardSideBar({ color, routes }) {
       <div className="sidebar-background" />
       <div className="sidebar-wrapper">
         <div className="logo d-flex align-items-center justify-content-start">
-          <a className="simple-text" href="http://www.creative-tim.com">
+          <Link to="/" className="simple-text">
             Hệ thống quản lý lịch khám
-          </a>
+          </Link>
         </div>
         <Nav>
           {routes.map((prop, key) => {

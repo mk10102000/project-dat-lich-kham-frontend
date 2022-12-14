@@ -1,22 +1,154 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useEffect, useState } from 'react';
-import * as yup from 'yup';
-import { Container, Row, Col, Form } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
-import { TextField } from '../../../components/Input/TextField';
-import Select from 'react-select';
-import { phoneRegExp, toastify } from '../../../utils/common';
-import styles from '../ProfileUser.module.css';
 import { parse } from 'date-fns';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import {
+  Col,
+  Container,
+  Form,
+  Row,
+  Card,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { optionsGender } from '../../../constants/constants';
+import * as yup from 'yup';
+import { datLichApi } from '../../../api/datLich';
 import { userApi } from '../../../api/userApi';
+import { updateProfileUser } from '../../../app/slices/authSlice';
+import { Chip } from '../../../components/Chip/Chip';
+import InputControl from '../../../form-control/InputControl';
+import SelectControl from '../../../form-control/SelectControl';
+import { formatDate, phoneRegExp, toastify } from '../../../utils/common';
+import styles from '../ProfileUser.module.css';
+
+export function CardTicker({ item, isCheck, onClick }) {
+  const {
+    ngaySinh,
+    gioiTinh,
+    tinhTrangDangKy,
+    hoTen,
+    SDT,
+    maND,
+    maThoiGian,
+    thoiGianDky,
+    thoiGianBatDau,
+  } = item;
+
+  return (
+    <Card text={'dark'} style={{ width: '100%' }} className="mb-4">
+      <div style={{ borderBottom: '1px solid rgb(215 204 204)' }}>
+        <Card.Header
+          style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            marginBottom: '5px',
+          }}
+        >
+          Thông tin lịch khám
+        </Card.Header>
+      </div>
+      <Card.Body>
+        <div>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Họ tên:
+            </span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+              {hoTen}
+            </span>
+          </Card.Text>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Giới tính:
+            </span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+              {gioiTinh}
+            </span>
+          </Card.Text>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Ngày sinh:
+            </span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+              {moment(ngaySinh).format('YYYY-MM-DD')}
+            </span>
+          </Card.Text>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Số điện thoại:
+            </span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+              {SDT}
+            </span>
+          </Card.Text>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Ngày đặt khám:
+            </span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+              {formatDate(thoiGianDky)}
+            </span>
+          </Card.Text>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Thời gian khám:
+            </span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
+              {thoiGianBatDau}
+            </span>
+          </Card.Text>
+          <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
+              Tình trạng:
+            </span>
+            {tinhTrangDangKy === 'Success' ? (
+              <Chip status={'Đã xác nhận'} variant={'#03a9f4'} />
+            ) : (
+              <Chip status={'Đang chờ'} variant={'#ffc107'} />
+            )}
+          </Card.Text>
+        </div>
+
+        {isCheck && (
+          <>
+            <div className="d-flex justify-content-between mt-4">
+              {tinhTrangDangKy === 'Pending' && (
+                <button
+                  className="btn-button btn-button-primary p-p-5 mx-1"
+                  onClick={() => onClick(maND, maThoiGian, thoiGianDky)}
+                >
+                  Xác nhận
+                </button>
+              )}
+              <button
+                className="btn-button"
+                style={{ backgroundColor: '#ff1744', color: '#fff', flex: 1 }}
+              >
+                Từ chối
+              </button>
+            </div>
+          </>
+        )}
+      </Card.Body>
+    </Card>
+  );
+}
 
 export function ProfileInforUser() {
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const initialValues = {};
+  const initialValues = {
+    hoTen: '',
+    SDT: '',
+    email: '',
+    gioiTinh: '',
+    ngheNghiep: '',
+    ngaySinh: '',
+  };
   const schema = yup.object().shape({
     hoTen: yup.string().required('Họ tên không được bỏ trống'),
     SDT: yup
@@ -28,9 +160,9 @@ export function ProfileInforUser() {
       .string()
       .email('Email không hợp lệ')
       .required('Email không được bỏ trống.'),
-    sex: yup.string().required('Giới tính không được bỏ trông'),
+    gioiTinh: yup.string().required('Giới tính không được bỏ trông'),
     ngheNghiep: yup.string().required('Nghề nghiệp không được bỏ trống'),
-    birthDate: yup
+    ngaySinh: yup
       .date()
       .transform(function (value, originalValue) {
         if (this.isType(value)) {
@@ -47,6 +179,7 @@ export function ProfileInforUser() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: initialValues,
@@ -57,10 +190,26 @@ export function ProfileInforUser() {
     reset(currentUser);
   }, []);
 
+  const handleOnSubmit = (data) => {
+    dispatch(
+      updateProfileUser({
+        maND: currentUser.maND,
+        formData: {
+          ...data,
+          ngaySinh: moment(data.ngaySinh).format('YYYY-MM-DD'),
+        },
+      })
+    )
+      .unwrap()
+      .then((res) => {
+        toastify('success', res.message);
+      });
+  };
+
   return (
     <div>
-      <h5 className="text-center mb-5 fw-bold">NHẬP THÔNG TIN NGƯỜI DÙNG</h5>
-      <form onSubmit={handleSubmit((values) => console.log(values))}>
+      <h5 className="text-center mb-5 fw-bold">NHẬP THÔNG TIN BỆNH NHÂN</h5>
+      <form onSubmit={handleSubmit(handleOnSubmit)}>
         <Container>
           <Row>
             <Col xs={6} className="mb-5 mx-0">
@@ -71,56 +220,27 @@ export function ProfileInforUser() {
               >
                 Họ và tên<span className="text-danger">*</span>
               </label>
-              <input
+              <InputControl
+                name="hoTen"
+                control={control}
                 type="text"
-                className={`${styles.form} ${`form-control p-4 h4 m-0`} ${
-                  errors.hoTen && styles.inputError
-                }`}
-                id="hoTen"
-                {...register('hoTen')}
-                placeholder="Ví dụ Phạm Minh Khánh"
+                placeholder="Nhập họ tên"
               />
-              {errors.hoTen && (
-                <Form.Text
-                  className="text-danger"
-                  style={{
-                    fontSize: '1.6rem',
-                    paddingTop: '0.5rem',
-                    display: 'block',
-                  }}
-                >
-                  {errors.hoTen.message}
-                </Form.Text>
-              )}
             </Col>
             <Col xs={6} className="mb-5 mx-0">
               <label
-                htmlFor="birthDate"
+                htmlFor="ngaySinh"
                 className="form-label fw-bold"
                 style={{ fontSize: '1.6rem' }}
               >
                 Ngày tháng năm sinh<span className="text-danger">*</span>
               </label>
-              <input
+              <InputControl
+                name="ngaySinh"
+                control={control}
+                placeholder="Chọn ngày sinh"
                 type="date"
-                className={`${styles.form} ${`form-control p-4 h4 m-0`} ${
-                  errors.birthDate && styles.inputError
-                }`}
-                id="birthDate"
-                {...register('birthDate')}
               />
-              {errors.birthDate && (
-                <Form.Text
-                  className="text-danger"
-                  style={{
-                    fontSize: '1.6rem',
-                    paddingTop: '0.5rem',
-                    display: 'block',
-                  }}
-                >
-                  {errors.birthDate.message}
-                </Form.Text>
-              )}
             </Col>
             <Col xs={6} className="mb-5 mx-0">
               <label
@@ -130,27 +250,12 @@ export function ProfileInforUser() {
               >
                 Số điện thoại<span className="text-danger">*</span>
               </label>
-              <input
+              <InputControl
+                name="SDT"
+                control={control}
                 type="text"
-                className={`${styles.form} ${`form-control p-4 h4 m-0`} ${
-                  errors.SDT && styles.inputError
-                }`}
-                id="SDT"
-                {...register('SDT')}
                 placeholder="Nhập số điện thoại"
               />
-              {errors.SDT && (
-                <Form.Text
-                  className="text-danger"
-                  style={{
-                    fontSize: '1.6rem',
-                    paddingTop: '0.5rem',
-                    display: 'block',
-                  }}
-                >
-                  {errors.SDT.message}
-                </Form.Text>
-              )}
             </Col>
             <Col xs={6} className="mb-5 mx-0">
               <label
@@ -158,81 +263,53 @@ export function ProfileInforUser() {
                 className="form-label fw-bold"
                 style={{ fontSize: '1.6rem' }}
               >
-                Chọn giới tính<span className="text-danger">*</span>
+                Giới tính<span className="text-danger">*</span>
               </label>
-              <Select options={optionsGender} />
-              {errors.sex && (
-                <Form.Text
-                  className="text-danger"
-                  style={{
-                    fontSize: '1.6rem',
-                    paddingTop: '0.5rem',
-                    display: 'block',
-                  }}
-                >
-                  {errors.sex.message}
-                </Form.Text>
-              )}
+              <SelectControl
+                name="gioiTinh"
+                control={control}
+                values={[
+                  {
+                    value: 'Nam',
+                    label: 'Nam',
+                  },
+                  {
+                    value: 'Nữ',
+                    label: 'Nữ',
+                  },
+                ]}
+                placeholder="Chọn giới tính"
+              />
             </Col>
             <Col xs={6} className="mb-5 mx-0">
               <label
-                htmlFor="SDT"
+                htmlFor="ngheNghiep"
                 className="form-label fw-bold"
                 style={{ fontSize: '1.6rem' }}
               >
                 Nghề nghiệp<span className="text-danger">*</span>
               </label>
-              <input
-                type="SDT"
-                className={`${styles.form} ${`form-control p-4 h4 m-0`} ${
-                  errors.ngheNghiep && styles.inputError
-                }`}
-                id="ngheNghiep"
-                {...register('ngheNghiep')}
+              <InputControl
+                name="ngheNghiep"
+                control={control}
                 placeholder="Nhập nghề nghiệp"
+                type="text"
               />
-              {errors.ngheNghiep && (
-                <Form.Text
-                  className="text-danger"
-                  style={{
-                    fontSize: '1.6rem',
-                    paddingTop: '0.5rem',
-                    display: 'block',
-                  }}
-                >
-                  {errors.ngheNghiep.message}
-                </Form.Text>
-              )}
             </Col>
             <Col xs={6} className="mb-5 mx-0">
               <label
-                htmlFor="SDT"
+                htmlFor="email"
                 className="form-label fw-bold"
                 style={{ fontSize: '1.6rem' }}
               >
                 Địa chỉ email<span className="text-danger">*</span>
               </label>
-              <input
-                type="SDT"
-                className={`${styles.form} ${`form-control p-4 h4 m-0`} ${
-                  errors.email && styles.inputError
-                }`}
-                id="email"
-                {...register('email')}
-                placeholder="Nhập nghề nghiệp"
+              <InputControl
+                name="email"
+                control={control}
+                placeholder="Nhập địa chỉ email"
+                type="text"
               />
-              {errors.email && (
-                <Form.Text
-                  className="text-danger"
-                  style={{
-                    fontSize: '1.6rem',
-                    paddingTop: '0.5rem',
-                    display: 'block',
-                  }}
-                >
-                  {errors.email.message}
-                </Form.Text>
-              )}
             </Col>
           </Row>
         </Container>
@@ -455,8 +532,8 @@ export function ProfileInforDoctor() {
 export function ProfileHistory() {
   return (
     <div>
-      <h4 className="text-center mb-5 fw-bold">Lịch sử khám bệnh</h4>
-      <h6 className="text-danger text-center mb-5">
+      <h5 className="text-center mb-5 fw-bold">Lịch sử khám bệnh</h5>
+      <h6 className="text-danger text-center mb-2">
         Hiện chưa có thông tin lịch sử khám
       </h6>
       <div>
@@ -465,6 +542,64 @@ export function ProfileHistory() {
           src="https://medpro.vn/static/media/phieukham_notfound.e2166690.svg"
           alt=""
         />
+      </div>
+    </div>
+  );
+}
+
+export function ProfileInforTicker() {
+  const navigate = useNavigate();
+  const { maND } = useSelector((state) => state.auth.currentUser);
+  const [listTicker, setListTicker] = useState([]);
+  const fetchData = async () => {
+    try {
+      const res = await datLichApi.getDatLichUser(maND);
+      setListTicker(res);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  return (
+    <div>
+      <h5 className="text-center mb-5 fw-bold">Phiếu đăng ký khám bệnh</h5>
+      <h6 className="text-danger text-center mb-2">
+        {listTicker.total < 0 && 'Hiện chưa có thông tin phiếu khám bệnh'}
+      </h6>
+      <div>
+        {listTicker.total > 0 ? (
+          <Container>
+            <Row>
+              {listTicker.data.map((item) => (
+                <Col xs={4}>
+                  <CardTicker
+                    item={item}
+                    key={`${item.thoiGianDky}${item.thoiGianBatDau} `}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        ) : (
+          <>
+            <div style={{ display: 'flex' }}>
+              <button
+                className="btn-button btn-button-primary"
+                style={{ margin: '2rem auto' }}
+                onClick={() => navigate('/dich-vu')}
+              >
+                Đăng ký khám ngay
+              </button>
+            </div>
+            <div>
+              <img
+                width="100%"
+                src="https://medpro.vn/static/media/phieukham_notfound.e2166690.svg"
+                alt=""
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
