@@ -1,44 +1,61 @@
-import { getTime } from 'date-fns';
+import { addDays } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import React, { useEffect, useMemo, useState } from 'react';
-// react-bootstrap components
-import { Col, Container, Row } from 'react-bootstrap';
-import { Calendar } from 'react-calendar';
+import * as yup from 'yup';
+import { Col, Container, Row, Table } from 'react-bootstrap';
+import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { useForm } from 'react-hook-form';
 import { datLichApi } from '../../../api/datLich';
 import { lichLamViecApi } from '../../../api/lichLamViecApi';
+import { Chip } from '../../../components/Chip/Chip';
 import { Loading } from '../../../components/Loading';
 import SelectControl from '../../../form-control/SelectControl';
 import { formatDate, toastify } from '../../../utils/common';
-import { CardTicker } from '../../ProfileUser/components/ProfileContent';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-function getPreviousDay(date = new Date()) {
-  const previous = new Date(date.getTime());
-  previous.setDate(date.getDate() - 1);
-
-  return previous;
-}
-
+const schema = yup.object().shape({
+  maThoiGian: yup.string(),
+  tinhTrangDangKy: yup.string(),
+});
 function ManagerCalendar() {
+  const [state, setState] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 6),
+      key: 'selection',
+    },
+  ]);
   const [dateData, setDateData] = useState(new Date());
+  const [params, setParams] = useState({
+    maThoiGian: '',
+    tinhTrangDangKy: '',
+  });
   const [loading, setLoading] = useState(true);
   const [listRegister, setListRegister] = useState([]);
   const [lich, setLich] = useState([]);
   const [isLoadingCard, setIsLoadingCard] = useState(true);
 
-  const { control } = useForm();
-
-  const [value, onChange] = useState(new Date());
-  const tileDisabled = ({ activeStartDate, date, view }) => {
-    return date < getPreviousDay(new Date()) || !date.getDay('Sunday');
-  };
-  const handleOnClickDay = (value) => {
-    setDateData(value);
-  };
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      maThoiGian: '',
+      tinhTrangDangKy: '',
+    },
+    resolver: yupResolver(schema),
+  });
 
   const fetchData = async (date) => {
     try {
       const res = await datLichApi.getAllDatLich({
-        ngayDatLich: formatDate(date),
+        ngayBatDau: formatDate(state[0].startDate),
+        ngayKetThuc: formatDate(state[0].endDate),
+        ...params,
       });
       setListRegister(res);
       setLoading(false);
@@ -52,8 +69,8 @@ function ManagerCalendar() {
     } catch (error) {}
   };
   useEffect(() => {
-    fetchData(dateData);
-  }, [dateData]);
+    fetchData(state);
+  }, [state, params]);
 
   useEffect(() => {
     fetchGetTime();
@@ -61,7 +78,6 @@ function ManagerCalendar() {
 
   const handleOnConfirm = (maND, maThoiGian, thoiGianDky) => {
     try {
-      console.log(maND);
       const res = datLichApi.comfirmDangKy(
         { maND, maThoiGian, thoiGianDky: formatDate(thoiGianDky) },
         { tinhTrangDangKy: 'Success' }
@@ -84,73 +100,149 @@ function ManagerCalendar() {
     });
   }, [lich]);
 
+  const handleOnSubmit = (data) => {
+    setParams(data);
+  };
+
   if (loading) return <Loading />;
   return (
     <>
       <Container style={{ marginTop: '75px' }}>
         <Row>
-          <Col xs={5}>
-            <div className="mb-4" style={{ position: 'fixed', width: '440px' }}>
-              <Calendar
-                onChange={onChange}
-                value={value}
-                tileDisabled={tileDisabled}
-                // tileDisabled={({ date }) => !date.getDay('Sunday')}
-                onClickDay={handleOnClickDay}
-                locale="vi"
-              />
+          <Col xs={12}>
+            <div className="d-flex align-items-center gap-2">
+              <form onSubmit={handleSubmit(handleOnSubmit)}>
+                <div className="my-2 mb-5">
+                  <div className="d-flex align-items-center gap-5">
+                    <div>
+                      <h5 style={{ margin: 0 }}> Lọc </h5>
+                    </div>
+                    <div>
+                      <SelectControl
+                        name="maThoiGian"
+                        placeholder="Chọn thời gian"
+                        values={optionTime}
+                        control={control}
+                        errors={errors}
+                      />
+                    </div>
+                    <div>
+                      <SelectControl
+                        name="tinhTrangDangKy"
+                        placeholder="Chọn trạng thái"
+                        values={[
+                          {
+                            value: 'Success',
+                            label: 'Đã xác nhận',
+                          },
+                          {
+                            value: 'Pending',
+                            label: 'Đang chờ',
+                          },
+                        ]}
+                        control={control}
+                        errors={errors}
+                      />
+                    </div>
+                    <div
+                      style={{ marginTop: '-1rem', width: '300px' }}
+                      className="d-flex gap-2"
+                    >
+                      <button
+                        className="btn-button btn-button-primary p-3"
+                        style={{ width: '100%' }}
+                        type="submit"
+                      >
+                        Áp dụng
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div style={{ width: '300px' }}>
+                <button
+                  className="btn-button p-3 mb-5"
+                  style={{ width: '100%', margin: 'auto' }}
+                  onClick={() => {
+                    reset({
+                      maThoiGian: '',
+                      tinhTrangDangKy: '',
+                    });
+                    setParams({
+                      maThoiGian: '',
+                      tinhTrangDangKy: '',
+                    });
+                  }}
+                >
+                  Xóa lọc
+                </button>
+              </div>
             </div>
-          </Col>
-          <Col xs={7}>
-            <div className="my-2 mb-5">
-              <Row>
-                <Col xs={1}>
-                  <h4 style={{ margin: 0 }}> Lọc </h4>
-                </Col>
-                <Col xs={4}>
-                  <SelectControl
-                    name="time"
-                    placeholder="Chọn thời gian"
-                    values={optionTime}
-                    control={control}
-                  />
-                </Col>
-                <Col xs={4}>
-                  <SelectControl
-                    name="name"
-                    placeholder="Chọn trạng thái"
-                    values={[
-                      {
-                        value: 'Success',
-                        label: 'Đã xác nhận',
-                      },
-                      {
-                        value: 'Pending',
-                        label: 'Đang chờ',
-                      },
-                    ]}
-                    control={control}
-                  />
-                </Col>
-                <Col xs={3}>
-                  <button className="btn-button p-3" style={{ width: '100%' }}>
-                    Xóa lọc
-                  </button>
-                </Col>
-              </Row>
+            <div className="mb-4">
+              <DateRange
+                onChange={(item) => setState([item.selection])}
+                showSelectionPreview={true}
+                moveRangeOnFirstSelection={false}
+                months={1}
+                ranges={state}
+                direction="horizontal"
+                locale={vi}
+                editableDateInputs={true}
+              />
             </div>
 
             <Row>
-              {listRegister.data?.map((item) => (
-                <Col xs={4}>
-                  <CardTicker
-                    isCheck={true}
-                    item={item}
-                    key={`${item.thoiGianDky}${item.thoiGianBatDau} `}
-                    onClick={handleOnConfirm}
-                  />
-                </Col>
-              ))}
+              <h2 className="text-center">Danh sách đăng ký lịch khám</h2>
+              <Table striped bordered hover size="sm">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Tên</th>
+                    <th>SDT</th>
+                    <th>Ngày khám</th>
+                    <th>Thời gian khám</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {listRegister.data?.map((item, index) => (
+                    <tr>
+                      <td>{index + 1}</td>
+                      <td>{item.hoTen}</td>
+                      <td>{item.SDT}</td>
+                      <td>{formatDate(item.thoiGianDky)}</td>
+                      <td>{item.thoiGianBatDau}</td>
+                      <td>
+                        {item.tinhTrangDangKy === 'Success' ? (
+                          <Chip status={'Đã xác nhận'} variant={'#03a9f4'} />
+                        ) : (
+                          <Chip status={'Đang chờ'} variant={'#ffc107'} />
+                        )}
+                      </td>
+
+                      <td>
+                        <div className="d-flex justify-content-between mt-4">
+                          {item.tinhTrangDangKy === 'Pending' && (
+                            <button
+                              className="btn-button btn-button-primary p-p-5 mx-1"
+                              onClick={() =>
+                                handleOnConfirm(
+                                  item.maND,
+                                  item.maThoiGian,
+                                  item.thoiGianDky
+                                )
+                              }
+                            >
+                              Xác nhận
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
 
               {listRegister.total <= 0 && (
                 <h4 className="text-warning">Chưa có người đăng ký</h4>

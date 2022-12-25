@@ -25,14 +25,19 @@ function Navbar(props) {
       </li>
       <li className={styles.navItem}>
         <NavLink
-          to="messages"
+          to="/gioi-thieu"
           className={({ isActive }) => (isActive ? styles.active : '')}
         >
           Giới thiệu
         </NavLink>
       </li>
       <li className={styles.navItem}>
-        <Link to="/">Tin tức</Link>
+        <NavLink
+          to="/tin-tuc"
+          className={({ isActive }) => (isActive ? styles.active : '')}
+        >
+          Tin tức
+        </NavLink>
       </li>
       <li className={styles.navItem}>
         <Link to="/">Thắc mắc</Link>
@@ -84,19 +89,28 @@ function Header(props) {
                     <div className={styles.userName}>{user.hoTen}</div>
                     <div className={styles.dropdown}>
                       <ul>
-                        <li onClick={() => navigate('/ho-so-ca-nhan')}>
+                        <li
+                          onClick={() => navigate('/ho-so-ca-nhan')}
+                          className={styles.itemDown}
+                        >
                           <FaUserCircle />
                           Hồ sơ cá nhân
                         </li>
                         {user.maQuyen === 'admin' && (
                           <>
-                            <li onClick={() => navigate('/admin')}>
+                            <li
+                              onClick={() => navigate('/admin/')}
+                              className={styles.itemDown}
+                            >
                               <RiAdminFill />
                               Trang quản lý
                             </li>
                           </>
                         )}
-                        <li onClick={() => dispatch(logout())}>
+                        <li
+                          onClick={() => dispatch(logout())}
+                          className={styles.itemDown}
+                        >
                           <AiOutlineLogout />
                           Đăng xuất
                         </li>

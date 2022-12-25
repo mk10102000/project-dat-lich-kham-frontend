@@ -2,15 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { parse } from 'date-fns';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import {
-  Col,
-  Container,
-  Form,
-  Row,
-  Card,
-  OverlayTrigger,
-  Tooltip,
-} from 'react-bootstrap';
+import { Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -19,6 +11,7 @@ import { datLichApi } from '../../../api/datLich';
 import { userApi } from '../../../api/userApi';
 import { updateProfileUser } from '../../../app/slices/authSlice';
 import { Chip } from '../../../components/Chip/Chip';
+import { Loading } from '../../../components/Loading';
 import InputControl from '../../../form-control/InputControl';
 import SelectControl from '../../../form-control/SelectControl';
 import { formatDate, phoneRegExp, toastify } from '../../../utils/common';
@@ -77,9 +70,7 @@ export function CardTicker({ item, isCheck, onClick }) {
             </span>
           </Card.Text>
           <Card.Text style={{ marginBottom: '10px', fontSize: '14px' }}>
-            <span style={{ fontWeight: 600, paddingRight: '8px' }}>
-              Số điện thoại:
-            </span>
+            <span style={{ fontWeight: 600, paddingRight: '8px' }}>SDT:</span>
             <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
               {SDT}
             </span>
@@ -106,6 +97,8 @@ export function CardTicker({ item, isCheck, onClick }) {
             </span>
             {tinhTrangDangKy === 'Success' ? (
               <Chip status={'Đã xác nhận'} variant={'#03a9f4'} />
+            ) : tinhTrangDangKy === 'hoanThanh' ? (
+              <Chip status={'Đã khám'} variant={'#03a9f4'} />
             ) : (
               <Chip status={'Đang chờ'} variant={'#ffc107'} />
             )}
@@ -176,7 +169,6 @@ export function ProfileInforUser() {
       .min('1969-11-13', 'Date is too early'),
   });
   const {
-    register,
     handleSubmit,
     reset,
     control,
@@ -330,7 +322,6 @@ export function ProfileInforUser() {
 
 export function ProfileInforDoctor() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.currentUser);
   const [isEdit, setIsEdit] = useState(false);
   const initialValues = {};
@@ -530,19 +521,57 @@ export function ProfileInforDoctor() {
 }
 
 export function ProfileHistory() {
+  const [loading, setLoading] = useState(true);
+  const { maND } = useSelector((state) => state.auth.currentUser);
+
+  const [data, setData] = useState([]);
+  const fetchData = async () => {
+    try {
+      const res = await datLichApi.getDatLichUser(maND, {
+        tinhTrangDky: 'hoanThanh',
+      });
+      setData(res);
+      setLoading(false);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) return <Loading />;
   return (
     <div>
       <h5 className="text-center mb-5 fw-bold">Lịch sử khám bệnh</h5>
-      <h6 className="text-danger text-center mb-2">
-        Hiện chưa có thông tin lịch sử khám
-      </h6>
-      <div>
-        <img
-          width="100%"
-          src="https://medpro.vn/static/media/phieukham_notfound.e2166690.svg"
-          alt=""
-        />
-      </div>
+      {data.total > 0 ? (
+        <>
+          <Container>
+            <Row>
+              {data.data.map((item) => (
+                <Col xs={4}>
+                  <CardTicker
+                    item={item}
+                    key={`${item.thoiGianDky}${item.thoiGianBatDau} `}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        </>
+      ) : (
+        <>
+          <h6 className="text-danger text-center mb-2">
+            Hiện chưa có thông tin lịch sử khám
+          </h6>
+          <div>
+            <img
+              width="100%"
+              src="https://medpro.vn/static/media/phieukham_notfound.e2166690.svg"
+              alt=""
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

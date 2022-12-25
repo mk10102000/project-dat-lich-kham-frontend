@@ -22,9 +22,10 @@ export default function ConfirmationList() {
         maND: maND,
         maThoiGian: services.time.maTG,
         tinhTrang: 'Pending',
-        thoiGianDangKy: moment(services.dateData).format('YYYY-MM-DD'),
+        thoiGianDangKy: services.date,
       });
       toastify('success', res.message);
+      navigate('/ho-so-ca-nhan');
     } catch (error) {}
   };
   return (

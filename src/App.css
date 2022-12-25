@@ -111,3 +111,19 @@ span.react-calendar__navigation__label__labelText.react-calendar__navigation__la
 .nav-link.active {
   background-color: var(--color-primary) !important;
 }
+
+.rdrCalendarWrapper,
+.rdrMonth {
+  width: 100% !important;
+}
+
+.sun-editor {
+  height: 500px !important;
+}
+.sun-editor .se-wrapper {
+  height: 400px !important;
+}
+
+.css-13cymwt-control {
+  font-size: 1.4rem;
+}

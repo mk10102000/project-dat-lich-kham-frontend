@@ -23,11 +23,17 @@ export const datLichApi = {
     }
   },
 
-  async getDatLichUser(maND) {
+  async getDatLichUser(maND, params) {
     try {
-      const res = await axiosClient.get(`dat-lich-user/${maND}`);
-      console.log(res);
-      return res;
+      if (params) {
+        const res = await axiosClient.get(`dat-lich-user/${maND}`, {
+          params,
+        });
+        return res;
+      } else {
+        const res = await axiosClient.get(`dat-lich-user/${maND}`);
+        return res;
+      }
     } catch (error) {
       toastify('error', error.message);
     }
@@ -36,6 +42,16 @@ export const datLichApi = {
   async getAllDatLich(params) {
     try {
       const res = await axiosClient.get(`all-dat-lich`, {
+        params: params,
+      });
+      return res;
+    } catch (error) {
+      toastify('error', error.message);
+    }
+  },
+  async getDatLichByMaThoiGian(params) {
+    try {
+      const res = await axiosClient.get(`get-dat-lich-by-thoi-gian`, {
         params: params,
       });
       return res;

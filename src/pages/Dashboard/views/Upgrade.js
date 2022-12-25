@@ -1,17 +1,6 @@
-import React from "react";
-
+import React from 'react';
 // react-bootstrap components
-import {
-  Badge,
-  Button,
-  Card,
-  Navbar,
-  Nav,
-  Table,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Button, Card, Col, Container, Row, Table } from 'react-bootstrap';
 
 function Upgrade() {
   return (

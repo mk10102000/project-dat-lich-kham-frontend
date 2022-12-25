@@ -8,7 +8,7 @@ export const toastify = (type, label) => {
     case 'success': {
       toast.success(label, {
         position: 'top-right',
-        autoClose: 3000,
+        autoClose: 1000,
       });
       break;
     }

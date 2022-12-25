@@ -1,7 +1,8 @@
 import Dashboard from './views/Dashboard.js';
 import UserProfile from './views/UserProfile.js';
 import TableList from './views/ManagerCalender.js';
-import Typography from './views/Typography.js';
+import Typography from './views/QuanLyLichKham.js';
+import ManagerPost from './views/ManagerCalender';
 import {
   BsFillCalendarDateFill,
   BsFillFileEarmarkPostFill,
@@ -33,14 +34,14 @@ const dashboardRoutes = [
     layout: '/admin',
   },
   {
-    path: '/typography',
+    path: '/manager-posts',
     name: 'Quản lý bài đăng',
     icon: <BsFillFileEarmarkPostFill />,
-    component: Typography,
+    component: ManagerPost,
     layout: '/admin',
   },
   {
-    path: '/typography',
+    path: '/quan-ly-lich-kham',
     name: 'Quản lý lịch khám',
     icon: <BsFillCalendarDateFill />,
     component: Typography,

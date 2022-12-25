@@ -10,6 +10,8 @@ import new3 from '../assets/images/new3.jpg';
 import bkLogin from '../assets/images/bk-login.jpg';
 import notFound from '../assets/images/undraw_page_not_found_su7k.svg';
 import logo from '../assets/images/logo.png';
+import gioithieu from '../assets/images/gioithieu.jpg';
+import intro from '../assets/images/intro.jpg';
 
 export const images = {
   LOGO: logo,
@@ -24,6 +26,8 @@ export const images = {
   NEW3: new3,
   BKLOGIN: bkLogin,
   NOT_FOUND: notFound,
+  GIOITHIEU: gioithieu,
+  INTRO: intro,
 };
 
 export const optionsGender = [

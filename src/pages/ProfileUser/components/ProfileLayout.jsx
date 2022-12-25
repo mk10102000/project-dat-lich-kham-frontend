@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import ProfileBar from './ProfileBar';
-import { Outlet } from 'react-router';
 import {
   ProfileHistory,
   ProfileInforUser,
@@ -11,7 +10,6 @@ import {
 
 function ProfileLayout(props) {
   const [activeId, setActiveId] = useState('hoso');
-  console.log(activeId);
   return (
     <div>
       <Container>

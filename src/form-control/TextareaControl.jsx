@@ -1,29 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
 import { Controller } from 'react-hook-form';
 import { Form } from 'react-bootstrap';
 import styles from './InputControl.module.css';
+import moment from 'moment';
 
-function SelectControl({ name, control, placeholder, values }) {
+function TextareaControl({ name, control, placeholder, type }) {
   return (
     <Controller
       name={name}
       control={control}
       render={({
-        field: { value, onChange, onBlur },
+        field: { value, onChange },
         fieldState: { invalid, error },
       }) => (
         <>
-          <Select
-            name={name}
-            options={values}
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            style={{ width: '100%', fontSize: '1.6rem', color: '#565656' }}
+            type={type}
+            className={`${styles.form} ${`p-4 h4 m-0`} ${
+              invalid && styles.inputError
+            }`}
             placeholder={placeholder}
-            onChange={(selectedOption) => {
-              onChange(selectedOption.value);
-            }}
-            onBlur={onBlur}
-            value={values.find((c) => c.value === value) || ''}
+            value={type === 'date' ? moment(value).format('YYYY-MM-DD') : value}
+            onChange={onChange}
           />
           <Form.Text
             className="text-danger"
@@ -41,4 +44,6 @@ function SelectControl({ name, control, placeholder, values }) {
   );
 }
 
-export default SelectControl;
+TextareaControl.propTypes = {};
+
+export default TextareaControl;

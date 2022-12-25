@@ -6,7 +6,10 @@ import { images } from '../../../../constants/constants';
 function Intro(props) {
   return (
     <div style={{ marginBottom: '15rem' }}>
-      <div className={styles.box}>
+      <div
+        className={styles.box}
+        style={{ backgroundImage: `url(${images.INTRO})` }}
+      >
         <Container>
           <Row>
             <Col xs={4}>
@@ -33,18 +36,21 @@ function Intro(props) {
         <Row>
           <Col>
             <IntroCard
+              title="Đặt khám nhanh chóng"
               image={images.NEW1}
               description="Bệnh nhân chủ động chọn thông tin đặt khám (ngày khám và giờ khám)"
             />
           </Col>
           <Col>
             <IntroCard
+              title="Thanh toán dễ dàng"
               image={images.NEW2}
               description="Người dùng chọn và thực hiện thanh toán trên phần mềm"
             />
           </Col>
           <Col>
             <IntroCard
+              title="Nhận phiếu trực tuyến"
               image={images.NEW3}
               description="Bệnh nhân sẽ nhận phiếu khám trực tuyến ngay trên phần mềm"
             />

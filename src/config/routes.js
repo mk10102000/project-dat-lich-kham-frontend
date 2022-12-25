@@ -1,21 +1,27 @@
 import Layout from '../components/Layout/Layout';
-import BooksService from '../pages/BookService/BooksService';
-import ChooseDayExamination from '../pages/ChooseDayExamination/ChooseDayExamination';
-import ConfirmInformation from '../pages/ConfirmInformation/ConfirmInformation';
-import ConfirmationList from '../pages/ConfirmInformation/components/ConfirmationList';
-import Home from '../pages/Home/Home';
 import Auth from '../pages/Auth/Auth';
 import Login from '../pages/Auth/components/Login';
 import Register from '../pages/Auth/components/Register';
-import Page404 from '../pages/NotFound/404';
+import BooksService from '../pages/BookService/BooksService';
+import ChooseDayExamination from '../pages/ChooseDayExamination/ChooseDayExamination';
+import ConfirmationList from '../pages/ConfirmInformation/components/ConfirmationList';
+import ConfirmInformation from '../pages/ConfirmInformation/ConfirmInformation';
 import DashboardLayout from '../pages/Dashboard/components/DashboardLayout';
 import Dashboard from '../pages/Dashboard/views/Dashboard';
+import ManagerCalendar from '../pages/Dashboard/views/ManagerCalender';
+import EditorPost from '../pages/Dashboard/views/Posts/EditorPost';
+import EditPost from '../pages/Dashboard/views/Posts/EditPost';
+import ManagerPost from '../pages/Dashboard/views/Posts/ManagerPost';
 import Upgrade from '../pages/Dashboard/views/Upgrade';
 import User from '../pages/Dashboard/views/UserProfile';
-import Notifications from '../pages/Dashboard/views/Notifications';
+import Home from '../pages/Home/Home';
+import Page404 from '../pages/NotFound/404';
 import ProfileUser from '../pages/ProfileUser/ProfileUser';
+import Introduce from '../pages/Introduce/Introduce';
 import { ProtectedRoute, ProtectedRouteAdmin } from './ProtectedRoute';
-import ManagerCalendar from '../pages/Dashboard/views/ManagerCalender';
+import PageNews from '../pages/News/PageNews';
+import NewsDetails from '../pages/News/NewsDetails';
+import QuanLyLichKham from '../pages/Dashboard/views/QuanLyLichKham';
 
 let routes = (isLogin) => [
   {
@@ -30,6 +36,10 @@ let routes = (isLogin) => [
         path: '/dich-vu',
         element: <BooksService />,
         children: [{ index: true, element: <ChooseDayExamination /> }],
+      },
+      {
+        path: '/gioi-thieu',
+        element: <Introduce />,
       },
       {
         path: '/xac-nhan-thong-tin',
@@ -50,6 +60,14 @@ let routes = (isLogin) => [
             <ProfileUser />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: '/tin-tuc',
+        element: <PageNews />,
+      },
+      {
+        path: '/tin-tuc/:id',
+        element: <NewsDetails />,
       },
     ],
   },
@@ -74,7 +92,16 @@ let routes = (isLogin) => [
       { path: 'upgrade', element: <Upgrade /> },
       { path: 'manager-canlendar', element: <ManagerCalendar /> },
       { path: 'user', element: <User /> },
-      { path: 'notifications', element: <Notifications /> },
+      {
+        path: 'manager-posts',
+        element: <ManagerPost />,
+      },
+      {
+        path: 'manager-posts/:id',
+        element: <EditPost />,
+      },
+      { path: 'manager-posts/new', element: <EditorPost /> },
+      { path: 'quan-ly-lich-kham', element: <QuanLyLichKham /> },
     ],
   },
   {

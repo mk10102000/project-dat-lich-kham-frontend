@@ -30,11 +30,10 @@ export default function ChooseDayExamination() {
     return previous;
   }
   const tileDisabled = ({ activeStartDate, date, view }) => {
-    return date < getPreviousDay(new Date()) || !date.getDay('Sunday');
+    return date < getPreviousDay(new Date());
   };
 
   const handleOnClickDay = (value) => {
-    console.log(value);
     setIsViewTime(true);
     setDateData(value);
   };
