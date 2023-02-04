@@ -18,10 +18,18 @@ import Home from '../pages/Home/Home';
 import Page404 from '../pages/NotFound/404';
 import ProfileUser from '../pages/ProfileUser/ProfileUser';
 import Introduce from '../pages/Introduce/Introduce';
-import { ProtectedRoute, ProtectedRouteAdmin } from './ProtectedRoute';
+import {
+  ProtectedRoute,
+  ProtectedRouteAdmin,
+  ProtectedRouteDoctor,
+} from './ProtectedRoute';
 import PageNews from '../pages/News/PageNews';
 import NewsDetails from '../pages/News/NewsDetails';
 import QuanLyLichKham from '../pages/Dashboard/views/QuanLyLichKham';
+import ChooseService from '../pages/BookService/ChooseService';
+import QuanLyLichLamViec from '../pages/Dashboard/views/QuanLyLichLamViec';
+import QuanLyBacSi from '../pages/Dashboard/views/QuanLyBacSi';
+import ListDoctor from '../pages/List-doctor/ListDoctor';
 
 let routes = (isLogin) => [
   {
@@ -34,12 +42,23 @@ let routes = (isLogin) => [
       },
       {
         path: '/dich-vu',
-        element: <BooksService />,
-        children: [{ index: true, element: <ChooseDayExamination /> }],
+        element: (
+          <ProtectedRouteDoctor isLogin={isLogin}>
+            <BooksService />
+          </ProtectedRouteDoctor>
+        ),
+        children: [
+          { index: true, element: <ChooseService /> },
+          { path: 'chon-ngay-kham', element: <ChooseDayExamination /> },
+        ],
       },
       {
         path: '/gioi-thieu',
         element: <Introduce />,
+      },
+      {
+        path: '/thong-tin',
+        element: <ListDoctor />,
       },
       {
         path: '/xac-nhan-thong-tin',
@@ -102,6 +121,8 @@ let routes = (isLogin) => [
       },
       { path: 'manager-posts/new', element: <EditorPost /> },
       { path: 'quan-ly-lich-kham', element: <QuanLyLichKham /> },
+      { path: 'manager-canlendar-user', element: <QuanLyLichLamViec /> },
+      { path: 'manager-doctor', element: <QuanLyBacSi /> },
     ],
   },
   {

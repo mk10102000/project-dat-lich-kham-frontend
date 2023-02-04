@@ -43,9 +43,9 @@ function Intro(props) {
           </Col>
           <Col>
             <IntroCard
-              title="Thanh toán dễ dàng"
+              title="Xem lịch khám"
               image={images.NEW2}
-              description="Người dùng chọn và thực hiện thanh toán trên phần mềm"
+              description="Người dùng chủ động xem được lịch khám"
             />
           </Col>
           <Col>

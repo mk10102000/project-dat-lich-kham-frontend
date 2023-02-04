@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 // react-bootstrap components
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import Select from 'react-select';
@@ -8,130 +8,169 @@ import { Loading } from '../../../components/Loading';
 import { formatDate, optionsRule, toastify } from '../../../utils/common';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { ruleUser } from '../../../utils/common';
+import InputControl from '../../../form-control/InputControl';
+import { useForm } from 'react-hook-form';
+import TextareaControl from '../../../form-control/TextareaControl';
+import SelectControl from '../../../form-control/SelectControl';
+import { khoaApi } from '../../../api/khoaApi';
 
 function ModelUser({ user, isShow, onClose, onSuccess }) {
-  const [maQuyen, setMaQuyen] = useState(user.maQuyen);
-  const [disabled, setDisabled] = useState(false);
-  const handleOnChange = (value) => {
-    setMaQuyen(value);
-  };
+  const { control, reset, handleSubmit } = useForm({});
+  const [khoa, setKhoa] = useState([]);
 
-  const handleOnSubmit = async () => {
+  const handleOnSubmit = async (values) => {
     try {
-      setDisabled(true);
-      const res = await userApi.editRoleUser({
-        maQuyen: maQuyen,
-        maND: user.maND,
-      });
+      const {
+        chuyenNganh,
+        truongTotNghiep,
+        kinhNghiem,
+        maKhoa,
+        lyLichCongTac,
+      } = values;
+      const formData = new FormData();
+      formData.append('chuyenNganh', chuyenNganh);
+      formData.append('truongTotNghiep', truongTotNghiep);
+      formData.append('kinhNghiem', kinhNghiem);
+      formData.append('maKhoa', maKhoa);
+      formData.append('lyLichCongTac', lyLichCongTac);
 
+      const res = await userApi.editProfileDoctor(user.maND, formData);
       toastify('success', res.message);
-      setDisabled(false);
       onClose();
       onSuccess();
     } catch (error) {}
   };
+
+  const fetchOptions = async () => {
+    try {
+      const data = await khoaApi.getKhoa();
+      setKhoa(data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    reset(user);
+    fetchOptions();
+  }, [user]);
+
+  const memoOption = useMemo(() => {
+    return khoa?.map((item) => {
+      return {
+        value: item.maKhoa,
+        label: item.tenKhoa,
+      };
+    });
+  }, [khoa]);
   return (
     <Modal show={isShow} onHide={() => onClose()}>
-      <Modal.Header closeButton>
-        <Modal.Title>Chỉnh sửa người dùng: </Modal.Title>
-      </Modal.Header>
+      <form onSubmit={handleSubmit(handleOnSubmit)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Bác sĩ: {user?.hoTen}</Modal.Title>
 
-      <Modal.Body>
-        <Form>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label
-              style={{
-                fontSize: '1.5rem',
-              }}
-            >
-              Họ và tên
-            </Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="name@example.com"
-              autoFocus
-              disabled
-              value={user.hoTen}
-              style={{
-                fontSize: '1.5rem',
-              }}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label
-              style={{
-                fontSize: '1.5rem',
-              }}
-            >
-              Email
-            </Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="name@example.com"
-              autoFocus
-              disabled
-              value={user.email}
-              style={{
-                fontSize: '1.5rem',
-              }}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label
-              style={{
-                fontSize: '1.5rem',
-              }}
-            >
-              Vai trò
-            </Form.Label>
-            <Select
-              name="maQuyen"
-              options={optionsRule}
-              onChange={(selectedOption) => {
-                handleOnChange(selectedOption.value);
-              }}
-              value={optionsRule.find((c) => c.value === maQuyen) || ''}
-              style={{
-                fontSize: '1.5rem',
-              }}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
+          <img
+            width="100"
+            height="100"
+            style={{
+              borderRadius: '100%',
+            }}
+            src={
+              user.avatar ||
+              'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg'
+            }
+            alt=""
+          />
+        </Modal.Header>
 
-      <Modal.Footer
-        style={{
-          justifyContent: 'center',
-          fontSize: '1.5rem',
-        }}
-      >
-        <Button
-          variant="secondary"
-          onClick={() => onClose()}
-          className="mx-2"
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label
+              style={{
+                fontSize: '1.5rem',
+              }}
+            >
+              Khoa
+            </Form.Label>
+
+            <SelectControl
+              name="maKhoa"
+              control={control}
+              values={memoOption}
+              placeholder="Chọn khoa"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label
+              style={{
+                fontSize: '1.5rem',
+              }}
+            >
+              Trường tốt nghiệp
+            </Form.Label>
+            <InputControl
+              placeholder="Đại học X"
+              name="truongTotNghiep"
+              control={control}
+              type="text"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label
+              style={{
+                fontSize: '1.5rem',
+              }}
+            >
+              Kinh nghiệm
+            </Form.Label>
+            <InputControl
+              placeholder="Số năm kinh nghiệm"
+              name="kinhNghiem"
+              control={control}
+              type="number"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label
+              style={{
+                fontSize: '1.5rem',
+              }}
+            >
+              Lý lịch công tác
+            </Form.Label>
+            <TextareaControl
+              placeholder="Lý lịch công tác"
+              name="lyLichCongTac"
+              control={control}
+              type="text"
+            />
+          </Form.Group>
+        </Modal.Body>
+
+        <Modal.Footer
           style={{
+            justifyContent: 'center',
             fontSize: '1.5rem',
           }}
         >
-          Đóng
-        </Button>
-        <Button
-          onClick={handleOnSubmit}
-          type="submit"
-          variant="primary"
-          style={{
-            fontSize: '1.5rem',
-          }}
-          disabled={disabled}
-        >
-          Lưu
-        </Button>
-      </Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => onClose()}
+            className="mx-2"
+            style={{
+              fontSize: '1.5rem',
+            }}
+          >
+            Đóng
+          </Button>
+          <button className="btn-button btn-button-primary mx-3" type="submit">
+            Lưu
+          </button>
+        </Modal.Footer>
+      </form>
     </Modal>
   );
 }
 
-function User() {
+const QuanLyBacSi = () => {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState();
   const [isShow, setIsShow] = useState(false);
@@ -140,7 +179,7 @@ function User() {
   const fetchData = async () => {
     try {
       const res = await userApi.getAllUser({
-        role: '',
+        role: ruleUser.BACSI,
       });
       setUsers(res);
       setLoading(false);
@@ -163,7 +202,7 @@ function User() {
   return (
     <>
       <Container fluid>
-        <h2 className="text-center">Danh sách người dùng hệ thống</h2>
+        <h3 className="text-center">Danh sách bác sĩ</h3>
         <Row>
           <Col xs={12}>
             <table class="table table-striped">
@@ -208,7 +247,7 @@ function User() {
             </table>
           </Col>
         </Row>
-        <h6>Tổng có: {users.totalData} người dùng</h6>
+        <h6>Tổng có: {users.totalData} bác sĩ</h6>
 
         {isShow && (
           <ModelUser
@@ -221,6 +260,6 @@ function User() {
       </Container>
     </>
   );
-}
+};
 
-export default User;
+export default QuanLyBacSi;

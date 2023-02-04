@@ -1,9 +1,11 @@
 import React from 'react';
+import { AiOutlineCalendar } from 'react-icons/ai';
 import { BsFillStickyFill } from 'react-icons/bs';
 import { FaHistory } from 'react-icons/fa';
 import { RiShieldUserLine } from 'react-icons/ri';
 import { TbBuildingHospital } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
+import { ruleUser } from '../../../utils/common';
 import styles from '../ProfileUser.module.css';
 
 const profileRoute = [
@@ -29,31 +31,55 @@ export default function ProfileBar({ id, onClickId }) {
   return (
     <div className={styles.profile}>
       <ul className={styles.profileBarList}>
-        {maQuyen === 'bacsi' && (
-          <li
-            className={`${styles.profileBarItem} ${
-              id === 'bacsi' && styles.active
-            }`}
-            onClick={() => onClickId('bacsi')}
-          >
-            <TbBuildingHospital />
-            Thông tin bác sĩ
-          </li>
-        )}
-        {profileRoute.map((profile) => (
+        {maQuyen === ruleUser.BACSI && (
           <>
             <li
               className={`${styles.profileBarItem} ${
-                id === profile.id && styles.active
+                id === 'bacsi' && styles.active
               }`}
-              key={profile.id}
-              onClick={() => onClickId(profile.id)}
+              onClick={() => onClickId('bacsi')}
             >
-              {profile.icon}
-              {profile.title}
+              <TbBuildingHospital />
+              Thông tin bác sĩ
+            </li>
+            <li
+              className={`${styles.profileBarItem} ${
+                id === 'hoso' && styles.active
+              }`}
+              onClick={() => onClickId('hoso')}
+            >
+              <TbBuildingHospital />
+              Thông tin chung
+            </li>
+            <li
+              className={`${styles.profileBarItem} ${
+                id === 'lichlamviec' && styles.active
+              }`}
+              onClick={() => onClickId('lichlamviec')}
+            >
+              <AiOutlineCalendar />
+              Đăng ký lịch làm việc
             </li>
           </>
-        ))}
+        )}
+        {maQuyen !== ruleUser.BACSI && (
+          <>
+            {profileRoute.map((profile) => (
+              <>
+                <li
+                  className={`${styles.profileBarItem} ${
+                    id === profile.id && styles.active
+                  }`}
+                  key={profile.id}
+                  onClick={() => onClickId(profile.id)}
+                >
+                  {profile.icon}
+                  {profile.title}
+                </li>
+              </>
+            ))}
+          </>
+        )}
       </ul>
     </div>
   );

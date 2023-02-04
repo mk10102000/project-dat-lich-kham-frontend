@@ -22,7 +22,9 @@ export const userApi = {
   },
   async addProfileDoctor(id, formData) {
     try {
-      const res = await axiosClient.post(`add-profile-doctor/${id}`, formData);
+      const res = await axiosClient.post(`add-profile-doctor/${id}`, formData, {
+        headers: { 'content-type': 'multipart/form-data' },
+      });
       return res;
     } catch (error) {
       toastify('error', error.message);
@@ -30,7 +32,9 @@ export const userApi = {
   },
   async editProfileDoctor(id, formData) {
     try {
-      const res = await axiosClient.put(`edit-profile-doctor/${id}`, formData);
+      const res = await axiosClient.put(`edit-profile-doctor/${id}`, formData, {
+        headers: { 'content-type': 'multipart/form-data' },
+      });
       return res;
     } catch (error) {
       toastify('error', error.message);
@@ -45,6 +49,14 @@ export const userApi = {
       toastify('error', error.message);
     }
   },
+  async editRoleUser(formData) {
+    try {
+      const res = await axiosClient.put(`edit-role`, formData);
+      return res;
+    } catch (error) {
+      toastify('error', error.message);
+    }
+  },
   async getProfileDoctor(id) {
     try {
       const res = await axiosClient.get(`get-profile-doctor/${id}`);
@@ -54,9 +66,11 @@ export const userApi = {
     }
   },
 
-  async getAllUser() {
+  async getAllUser(params) {
     try {
-      const res = await axiosClient.get('get-all-user');
+      const res = await axiosClient.get('get-all-user', {
+        params,
+      });
       return res;
     } catch (error) {
       toastify('error', error.message);

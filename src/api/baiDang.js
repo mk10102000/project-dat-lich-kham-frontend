@@ -39,4 +39,12 @@ export const baiDangApi = {
       toastify('error', error.message);
     }
   },
+  async deleteBaiDang(id) {
+    try {
+      const res = await axiosClient.delete(`delete-post/${id}`);
+      return res;
+    } catch (error) {
+      toastify('error', error.message);
+    }
+  },
 };

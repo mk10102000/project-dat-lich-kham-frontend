@@ -24,6 +24,10 @@ function SelectControl({ name, control, placeholder, values }) {
             }}
             onBlur={onBlur}
             value={values.find((c) => c.value === value) || ''}
+            styles={{
+              fontSize: '1.5rem',
+              padding: '1rem',
+            }}
           />
           <Form.Text
             className="text-danger"

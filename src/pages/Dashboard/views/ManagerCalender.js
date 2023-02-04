@@ -216,8 +216,12 @@ function ManagerCalendar() {
                       <td>
                         {item.tinhTrangDangKy === 'Success' ? (
                           <Chip status={'Đã xác nhận'} variant={'#03a9f4'} />
-                        ) : (
+                        ) : item.tinhTrangDangKy === 'Pending' ? (
                           <Chip status={'Đang chờ'} variant={'#ffc107'} />
+                        ) : (
+                          <>
+                            <Chip status={'Đã khám'} variant={'#03a9f4'} />
+                          </>
                         )}
                       </td>
 

@@ -11,6 +11,7 @@ import { MdOutlineLogin } from 'react-icons/md';
 import Search from '../../Search/Search';
 import { logout } from '../../../app/slices/authSlice';
 import { images } from '../../../constants/constants';
+import { ruleUser } from '../../../utils/common';
 
 function Navbar(props) {
   return (
@@ -33,15 +34,21 @@ function Navbar(props) {
       </li>
       <li className={styles.navItem}>
         <NavLink
+          to="/thong-tin"
+          className={({ isActive }) => (isActive ? styles.active : '')}
+        >
+          Thông tin bác sĩ
+        </NavLink>
+      </li>
+      <li className={styles.navItem}>
+        <NavLink
           to="/tin-tuc"
           className={({ isActive }) => (isActive ? styles.active : '')}
         >
           Tin tức
         </NavLink>
       </li>
-      <li className={styles.navItem}>
-        <Link to="/">Thắc mắc</Link>
-      </li>
+
       <li className={styles.navItem}>
         <Link to="/">Liên hệ</Link>
       </li>
@@ -53,6 +60,7 @@ function Header(props) {
   const user = useSelector((state) => state.auth.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   return (
     <Container>
       <div className={styles.header}>
@@ -69,7 +77,6 @@ function Header(props) {
             </div>
           </Col>
           <Col xs={6}>
-            <Search />
             <Navbar />
           </Col>
           <Col xs={3}>
@@ -96,7 +103,7 @@ function Header(props) {
                           <FaUserCircle />
                           Hồ sơ cá nhân
                         </li>
-                        {user.maQuyen === 'admin' && (
+                        {user.maQuyen === ruleUser.ADMIN && (
                           <>
                             <li
                               onClick={() => navigate('/admin/')}

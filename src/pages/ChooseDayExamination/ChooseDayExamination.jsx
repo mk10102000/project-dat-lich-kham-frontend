@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import HeadTitle from '../../components/HeadTitle/HeadTitle';
 import ChooseTime from './components/ChooseTime';
 import { lichLamViecApi } from '../../api/lichLamViecApi';
-import { useNavigate } from 'react-router';
+import { useNavigate, Navigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { addService } from '../../app/slices/bookServiceSlice';
@@ -15,6 +15,7 @@ import { formatDate } from '../../utils/common';
 export default function ChooseDayExamination() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.currentUser);
+  const { department } = useSelector((state) => state.service);
   const [value, onChange] = useState(new Date());
   const [time, setTime] = useState('');
   const [dateData, setDateData] = useState(new Date());
@@ -26,7 +27,6 @@ export default function ChooseDayExamination() {
   function getPreviousDay(date = new Date()) {
     const previous = new Date(date.getTime());
     previous.setDate(date.getDate() - 1);
-
     return previous;
   }
   const tileDisabled = ({ activeStartDate, date, view }) => {
@@ -43,7 +43,6 @@ export default function ChooseDayExamination() {
   };
 
   const handleOnSubmit = () => {
-    console.log({ time, dateData });
     dispatch(
       addService({
         time,
@@ -67,6 +66,7 @@ export default function ChooseDayExamination() {
     try {
       const res = await datLichApi.getDatLich({
         ngayDatLich: moment(dateData).format('YYYY-MM-DD'),
+        maKhoa: department.maKhoa,
       });
       setDataDatLich(res.data);
     } catch (error) {}
@@ -75,6 +75,8 @@ export default function ChooseDayExamination() {
     fetchData();
     fetchGetDatLich();
   }, [dateData]);
+
+  if (!department) return <Navigate to="/dich-vu" />;
 
   return (
     <div>

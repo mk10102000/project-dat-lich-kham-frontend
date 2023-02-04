@@ -27,3 +27,24 @@ export const toastify = (type, label) => {
 export const formatDate = (date) => {
   return moment(date).format('YYYY-MM-DD');
 };
+
+export const ruleUser = {
+  ADMIN: 'admin',
+  USER: 'user',
+  BACSI: 'bacsi',
+};
+
+export const optionsRule = [
+  {
+    value: 'admin',
+    label: 'Admin',
+  },
+  {
+    value: 'user',
+    label: 'Người dùng',
+  },
+  {
+    value: 'bacsi',
+    label: 'Bác sĩ',
+  },
+];

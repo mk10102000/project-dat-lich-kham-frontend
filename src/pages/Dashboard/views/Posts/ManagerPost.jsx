@@ -28,7 +28,15 @@ function ManagerPost() {
     fetchDataPost();
   }, []);
 
-  const handleOpenModalDeletePost = () => {};
+  const handleOpenModalDeletePost = async (id) => {
+    try {
+      const res = await baiDangApi.deleteBaiDang(id);
+      toastify('success', res.message);
+      fetchDataPost();
+    } catch (error) {
+      toastify('error', error.message);
+    }
+  };
 
   if (loading)
     return (
@@ -42,14 +50,6 @@ function ManagerPost() {
       <Container style={{ marginTop: '9rem' }}>
         <Row>
           <div className="d-flex justify-content-between my-2">
-            <div className={styles.boxSearch}>
-              <input
-                placeholder="Nhập từ khóa tìm kiếm..."
-                className={styles.search}
-              />
-              <GoSearch />
-            </div>
-
             <div>
               <button
                 className="btn-button btn-button-primary"
@@ -108,7 +108,7 @@ function ManagerPost() {
                   <AiFillDelete
                     fontSize="medium"
                     color="primary"
-                    onClick={() => {}}
+                    onClick={() => handleOpenModalDeletePost(item.mabaidang)}
                   />
                   <AiFillEdit
                     fontSize="medium"

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Form } from 'react-bootstrap';
 import { phoneRegExp } from '../../../utils/common';
+import { images } from '../../../constants/constants';
 
 function LoginForm({ onSubmitForm }) {
   const navigate = useNavigate();
@@ -38,10 +39,7 @@ function LoginForm({ onSubmitForm }) {
   return (
     <div>
       <div className={styles.logo} onClick={() => navigate('/')}>
-        <img
-          src="https://resource.medpro.com.vn/static/images/medpro/web/header_logo.svg?t=20337.701772199554"
-          alt=""
-        />
+        <img src={images.LOGO} alt="" width="100px" height="100px" />
       </div>
       <p className={styles.text}>Vui lòng nhập số điện thoại để tiếp tục</p>
 

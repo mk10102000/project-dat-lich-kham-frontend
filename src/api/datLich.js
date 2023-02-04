@@ -7,7 +7,6 @@ export const datLichApi = {
       const res = await axiosClient.get('dat-lich', {
         params: params,
       });
-      console.log(res);
       return res;
     } catch (error) {
       toastify('error', error.message);
@@ -16,7 +15,6 @@ export const datLichApi = {
   async dangKyDatLich(formData) {
     try {
       const res = await axiosClient.post('dat-lich', formData);
-      console.log(res);
       return res;
     } catch (error) {
       toastify('error', error.message);
@@ -65,6 +63,21 @@ export const datLichApi = {
       const res = await axiosClient.put('confirm-dat-lich', payload, {
         params: params,
       });
+      return res;
+    } catch (error) {}
+  },
+  async editNoteDatLich(params, payload) {
+    try {
+      const res = await axiosClient.put('edit-note', payload, {
+        params: params,
+      });
+      return res;
+    } catch (error) {}
+  },
+  async countDatLich() {
+    try {
+      const res = await axiosClient.get('count-datlich');
+      return res;
     } catch (error) {}
   },
 };

@@ -20,3 +20,6 @@
  - Xây dụng trang admin quản lý lịch khám
  - Xây dựng trang public bài đăng, tin tức
 
+# 1-2/2023
+- Xây dựng giao diện đăng ký lịch làm việc
+- fix toàn bộ website

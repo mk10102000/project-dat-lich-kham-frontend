@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Col, Form, Row } from 'react-bootstrap';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import { images } from '../../../constants/constants';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -61,10 +62,7 @@ function RegisterForm({ onSubmitForm }) {
   return (
     <div>
       <div className={styles.logo} onClick={() => navigate('/')}>
-        <img
-          src="https://resource.medpro.com.vn/static/images/medpro/web/header_logo.svg?t=20337.701772199554"
-          alt=""
-        />
+        <img src={images.LOGO} alt="" width="100px" height="100px" />
       </div>
       <p className={styles.text}>
         Vui lòng nhập thông tin để đăng ký tài khoản

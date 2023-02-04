@@ -26,12 +26,19 @@ function Header() {
       bg="light"
       expand="lg"
       className="position-fixed top-0 "
-      style={{ zIndex: 10, width: '100%' }}
+      style={{ zIndex: 10, width: '100%', height: '60px' }}
     >
       <Container fluid>
-        <button className="btn" onClick={() => dispatch(logout())}>
-          Đăng xuất
-        </button>
+        <div
+          className="d-flex justify-content-end"
+          style={{
+            width: '80%',
+          }}
+        >
+          <button className="btn" onClick={() => dispatch(logout())}>
+            Đăng xuất
+          </button>
+        </div>
       </Container>
     </Navbar>
   );

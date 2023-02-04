@@ -68,7 +68,7 @@ html {
 }
 
 .react-calendar__tile {
-  padding: 3rem !important;
+  /* padding: 3rem !important; */
 }
 
 span.react-calendar__navigation__label__labelText.react-calendar__navigation__label__labelText--from {
@@ -126,4 +126,43 @@ span.react-calendar__navigation__label__labelText.react-calendar__navigation__la
 
 .css-13cymwt-control {
   font-size: 1.4rem;
+}
+
+.css-qbdosj-Input {
+  font-size: 1.5rem !important;
+}
+
+.css-1dimb5e-singleValue {
+  padding: 1rem !important;
+}
+
+.rmdp-container {
+  visibility: visible !important;
+}
+
+.rmdp-input {
+  padding: 2rem !important;
+  font-size: 1.4rem !important;
+  height: 4rem;
+}
+
+.rmdp-border-right {
+  width: 600px !important;
+}
+
+.rmdp-panel.right {
+  width: 200px !important;
+}
+
+.rmdp-day {
+  padding: 3rem !important;
+}
+
+.rmdp-day-hidden,
+.rmdp-day.rmdp-disabled {
+  font-weight: 900;
+}
+.sun-editor .se-wrapper .se-wrapper-wysiwyg {
+    display: block;
+    height: 500px!important;
 }

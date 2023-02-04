@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HeadTitle from '../../../components/HeadTitle/HeadTitle';
 import Table from 'react-bootstrap/Table';
@@ -7,14 +7,15 @@ import { AiOutlineArrowRight, AiOutlineDelete } from 'react-icons/ai';
 import { toastify } from '../../../utils/common';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
-import { deleteService } from '../../../app/slices/bookServiceSlice';
+import { deleteService, resetData } from '../../../app/slices/bookServiceSlice';
 import { datLichApi } from '../../../api/datLich';
 
 export default function ConfirmationList() {
   const navigate = useNavigate();
-  const { services } = useSelector((state) => state.service);
+  const { services, department } = useSelector((state) => state.service);
   const { maND } = useSelector((state) => state.auth.currentUser);
-  console.log(services);
+  const [tinhTrangBenh, setTinhTrangBenh] = useState('');
+  const dispatch = useDispatch();
   const handleOnConfirm = async () => {
     // call api confirm
     try {
@@ -23,9 +24,12 @@ export default function ConfirmationList() {
         maThoiGian: services.time.maTG,
         tinhTrang: 'Pending',
         thoiGianDangKy: services.date,
+        maKhoa: department.maKhoa,
+        tinhTrangBenh: tinhTrangBenh,
       });
       toastify('success', res.message);
-      navigate('/ho-so-ca-nhan');
+      dispatch(resetData());
+      navigate('/dich-vu');
     } catch (error) {}
   };
   return (
@@ -33,6 +37,19 @@ export default function ConfirmationList() {
       <HeadTitle title="Xác nhận thông tin khám" />
       <div className={styles.boxTable}>
         <ConfirmaItem />
+        <div className="p-4">
+          <p>Nhập tình trạng bệnh(không bắt buộc)</p>
+          <textarea
+            rows="3"
+            cols="38"
+            type="text"
+            style={{ fontSize: '1.6rem', width: '100%' }}
+            className={`${`p-4 h4 m-0`}`}
+            placeholder="Nhập tình trạng bệnh"
+            value={tinhTrangBenh}
+            onChange={(e) => setTinhTrangBenh(e.target.value)}
+          />
+        </div>
       </div>
       <div className="d-flex justify-content-between mb-4 mt-4">
         <button className="btn-button" onClick={() => navigate(-1)}>
@@ -50,7 +67,7 @@ export default function ConfirmationList() {
 }
 
 function ConfirmaItem() {
-  const { services } = useSelector((state) => state.service);
+  const { services, department } = useSelector((state) => state.service);
   const dispatch = useDispatch();
 
   const handleOnDelete = () => {
@@ -61,7 +78,7 @@ function ConfirmaItem() {
       <thead>
         <tr className={styles.title}>
           <th>#</th>
-          <th>Dịch vụ</th>
+          <th>Chuyên khoa</th>
           <th>Giờ khám</th>
           <th>Tiền khám</th>
           <th>Hành động</th>
@@ -70,7 +87,7 @@ function ConfirmaItem() {
       <tbody>
         <tr>
           <td>{1}</td>
-          <td>Khám thường</td>
+          <td>{department.tenKhoa}</td>
           <td>
             {services.date} {services.time.thoiGianBatDau}
           </td>

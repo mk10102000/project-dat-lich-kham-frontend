@@ -18,6 +18,7 @@ export default function DashboardLayout() {
         style={{
           width: 'calc(100% - 26rem)',
           marginLeft: '26rem',
+          marginTop: '7rem',
         }}
       >
         <AdminNavbar />

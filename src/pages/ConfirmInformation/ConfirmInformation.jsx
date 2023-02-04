@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 function ConfirmInformation(props) {
   const navigate = useNavigate();
   const { services } = useSelector((state) => state.service);
-  console.log(JSON.stringify(services) === '{}');
   useEffect(() => {
     if (JSON.stringify(services) === '{}') {
       navigate('/dich-vu');

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import styles from '../ChooseDayExamination.module.css';
 
-const max = 6;
+const max = 10;
 function ChooseTime({
   onClickTime,
   time,
@@ -34,11 +34,11 @@ function ChooseTime({
               <Col xs={3} key={item.maTG} style={{ marginBottom: 20 }}>
                 <div>
                   {dataDatLich[Number(index)] &&
-                  dataDatLich[Number(index)].maND === maND ? (
+                  dataDatLich[Number(index)].maND.includes(maND) ? (
                     <button
                       disabled={
                         dataDatLich[Number(index)] &&
-                        dataDatLich[Number(index)].maND === maND
+                        dataDatLich[Number(index)].maND.includes(maND)
                       }
                       className={`${styles.timeDisble} btn-button`}
                     >
@@ -50,7 +50,7 @@ function ChooseTime({
                     <button
                       disabled={
                         dataDatLich[Number(index)] &&
-                        dataDatLich[Number(index)].maND === maND
+                        dataDatLich[Number(index)].maND.includes(maND)
                       }
                       className={`${styles.timeItem} ${
                         item.maTG === time.maTG && styles.timeActive
