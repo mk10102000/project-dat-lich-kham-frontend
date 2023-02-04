@@ -1,3 +1,8 @@
+# link
+https://dat-lich-kham-frontend.vercel.app/
+
+# deploy: vercel
+
 # dat lịch khám bệnh frontend
 - xây dựng các giao diện
 + Trang chủ
